@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>90-Day Analytics Engineer Tracker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0e0e0f;
+        --surface: #18181b;
+        --surface2: #1f1f23;
+        --border: #2a2a30;
+        --border2: #38383f;
+        --accent: #00e5a0;
+        --accent-dim: rgba(0, 229, 160, 0.12);
+        --accent-dim2: rgba(0, 229, 160, 0.06);
+        --text: #f0f0f0;
+        --text2: #888892;
+        --text3: #555560;
+        --radius: 10px;
+        --radius-sm: 6px;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        min-height: 100vh;
+      }
+
+      .top-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(14, 14, 15, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .top-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-family: "DM Mono", monospace;
+      }
+      .top-stats {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .top-stat {
+        text-align: center;
+      }
+      .top-stat-val {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+      }
+      .top-stat-label {
+        font-size: 10px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-top: 2px;
+        font-family: "DM Mono", monospace;
+      }
+
+      .progress-section {
+        padding: 1rem 1.5rem 0;
+      }
+      .progress-track {
+        height: 4px;
+        background: var(--surface2);
+        border-radius: 100px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 100px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 12px rgba(0, 229, 160, 0.4);
+      }
+
+      .main {
+        padding: 1.5rem;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .tools-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        align-items: center;
+      }
+      .tools-label {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: "DM Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        flex: 0 0 100%;
+        margin-bottom: 2px;
+      }
+      .btn {
+        font-family: "Syne", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border2);
+        background: var(--surface2);
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.15s;
+        letter-spacing: 0.02em;
+      }
+      .btn:hover {
+        background: var(--border);
+        color: var(--text);
+      }
+      .btn.accent {
+        background: var(--accent);
+        color: #0e0e0f;
+        border-color: var(--accent);
+      }
+      .btn.accent:hover {
+        opacity: 0.85;
+      }
+
+      .week-block {
+        margin-bottom: 10px;
+      }
+      .week-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.7rem 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        cursor: pointer;
+        user-select: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .week-header:hover {
+        border-color: var(--border2);
+        background: var(--surface2);
+      }
+      .week-header.week-complete {
+        border-color: rgba(0, 229, 160, 0.3);
+        background: var(--accent-dim2);
+      }
+      .week-num {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--accent);
+        background: var(--accent-dim);
+        padding: 2px 8px;
+        border-radius: 100px;
+        white-space: nowrap;
+      }
+      .week-label {
+        font-size: 14px;
+        font-weight: 600;
+        flex: 1;
+        color: var(--text);
+      }
+      .week-progress-mini {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+      .week-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--border2);
+        transition: background 0.2s;
+      }
+      .week-dot.done {
+        background: var(--accent);
+      }
+      .week-count {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: "DM Mono", monospace;
+        margin-left: 6px;
+        white-space: nowrap;
+      }
+      .week-arrow {
+        font-size: 10px;
+        color: var(--text3);
+        transition: transform 0.25s;
+        margin-left: 4px;
+      }
+      .week-arrow.open {
+        transform: rotate(180deg);
+      }
+
+      .week-days {
+        display: none;
+        padding: 6px 0 0 0;
+      }
+      .week-days.open {
+        display: block;
+      }
+
+      .day-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 5px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+      .day-card:hover {
+        border-color: var(--border2);
+      }
+      .day-card.day-complete {
+        border-color: rgba(0, 229, 160, 0.2);
+      }
+
+      .day-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.6rem 0.9rem;
+        cursor: pointer;
+      }
+      .day-circle {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.25s;
+      }
+      .day-circle.done {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .day-circle.done::after {
+        content: "";
+        display: block;
+        width: 5px;
+        height: 9px;
+        border: 2px solid #0e0e0f;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg) translateY(-1px);
+      }
+      .day-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text2);
+        font-family: "DM Mono", monospace;
+        flex: 0 0 52px;
+      }
+      .day-label.done {
+        color: var(--text3);
+      }
+      .day-preview {
+        font-size: 12px;
+        color: var(--text3);
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .day-task-count {
+        font-size: 11px;
+        color: var(--text3);
+        font-family: "DM Mono", monospace;
+        white-space: nowrap;
+      }
+      .day-arrow {
+        font-size: 9px;
+        color: var(--text3);
+        transition: transform 0.2s;
+        margin-left: 4px;
+      }
+      .day-arrow.open {
+        transform: rotate(180deg);
+      }
+
+      .day-tasks {
+        display: none;
+        padding: 0 0.9rem 0.75rem 2.7rem;
+        border-top: 1px solid var(--border);
+        margin-top: 2px;
+      }
+      .day-tasks.open {
+        display: block;
+      }
+
+      .task-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 4px;
+        cursor: pointer;
+        border-radius: var(--radius-sm);
+        transition: background 0.15s;
+        margin-left: -4px;
+      }
+      .task-row:hover {
+        background: var(--surface2);
+      }
+      .task-box {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .task-box.done {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .task-box.done::after {
+        content: "";
+        display: block;
+        width: 3px;
+        height: 6px;
+        border: 1.5px solid #0e0e0f;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg) translateY(-1px);
+      }
+      .task-text {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.4;
+        transition: color 0.2s;
+      }
+      .task-text.done {
+        color: var(--text3);
+        text-decoration: line-through;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: var(--accent);
+        color: #0e0e0f;
+        font-family: "DM Mono", monospace;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 0.6rem 1.4rem;
+        border-radius: 100px;
+        z-index: 999;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        pointer-events: none;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+      #importFile {
+        display: none;
+      }
+      .bottom-pad {
+        height: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-header">
+      <div class="top-title">90-Day Analytics Plan</div>
+      <div class="top-stats">
+        <div class="top-stat">
+          <div class="top-stat-val" id="hDays">0</div>
+          <div class="top-stat-label">Days</div>
+        </div>
+        <div class="top-stat">
+          <div class="top-stat-val" id="hTasks">0</div>
+          <div class="top-stat-label">Tasks</div>
+        </div>
+        <div class="top-stat">
+          <div class="top-stat-val" id="hPct">0%</div>
+          <div class="top-stat-label">Done</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-track">
+        <div class="progress-fill" id="pBar" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="tools-bar">
+        <div class="tools-label">Backup & restore your progress</div>
+        <button class="btn accent" onclick="exportProgress()">
+          Export backup
+        </button>
+        <button
+          class="btn"
+          onclick="document.getElementById('importFile').click()"
+        >
+          Import backup
+        </button>
+        <button class="btn" onclick="resetAll()">Reset all</button>
+        <input
+          type="file"
+          id="importFile"
+          accept=".json"
+          onchange="importProgress(event)"
+        />
+      </div>
+      <div id="weekContainer"></div>
+      <div class="bottom-pad"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const PLAN = [
+        {
+          day: 1,
+          tasks: [
+            "Read GROUP BY tutorial",
+            "Write 5 SQL queries",
+            "LeetCode #1757",
+            "LeetCode #596",
+            "pgexercises SELECT",
+          ],
+        },
+        {
+          day: 2,
+          tasks: [
+            "Learn JOIN types",
+            "Write all JOIN queries",
+            "LeetCode #175",
+            "LeetCode #183",
+            "LeetCode #1068",
+          ],
+        },
+        {
+          day: 3,
+          tasks: [
+            "Write subquery",
+            "Convert to CTE",
+            "LeetCode #197",
+            "LeetCode #184",
+            "Practice EXISTS",
+          ],
+        },
+        {
+          day: 4,
+          tasks: [
+            "CASE WHEN practice",
+            "COALESCE + NULLIF",
+            "LeetCode #1322",
+            "DataLemur Signup Rate",
+            "LeetCode #1661",
+          ],
+        },
+        {
+          day: 5,
+          tasks: [
+            "String functions",
+            "Date functions",
+            "LeetCode #1484",
+            "LeetCode #1667",
+            "LeetCode #1693",
+          ],
+        },
+        {
+          day: 6,
+          tasks: [
+            "Write 3 CTE chain",
+            "MoM change logic",
+            "LeetCode #1164",
+            "LeetCode #1454",
+            "DataLemur Snaps",
+          ],
+        },
+        {
+          day: 7,
+          tasks: ["Create GitHub repo", "Push SQL files", "Write README"],
+        },
+        {
+          day: 8,
+          tasks: [
+            "Window functions theory",
+            "RANK vs DENSE_RANK",
+            "LeetCode #178",
+            "LeetCode #185",
+            "DataLemur Grossing",
+          ],
+        },
+        {
+          day: 9,
+          tasks: [
+            "LAG LEAD practice",
+            "Running totals",
+            "DataLemur YoY",
+            "Rolling avg",
+            "LeetCode #1321",
+          ],
+        },
+        {
+          day: 10,
+          tasks: [
+            "Fraud window query",
+            "RANGE vs ROWS",
+            "LeetCode #601",
+            "LeetCode #180",
+            "Top artists",
+          ],
+        },
+        {
+          day: 11,
+          tasks: [
+            "FULL OUTER JOIN",
+            "Anti-join",
+            "ROW_NUMBER dedup",
+            "LeetCode #1097",
+            "DataLemur no likes",
+          ],
+        },
+        {
+          day: 12,
+          tasks: [
+            "Cohort retention logic",
+            "3-CTE chain",
+            "DataLemur retention",
+            "LeetCode #1336",
+          ],
+        },
+        {
+          day: 13,
+          tasks: ["Setup Snowflake", "Setup dbt Cloud", "Run dbt debug"],
+        },
+        {
+          day: 14,
+          tasks: [
+            "Create stg_transactions.sql",
+            "Run dbt run",
+            "Warmup SQL problems",
+          ],
+        },
+        {
+          day: 15,
+          tasks: [
+            "Create staging models",
+            "sources.yml",
+            "Run freshness checks",
+          ],
+        },
+      ];
+      const G = [
+        "Complete learning topic",
+        "Solve all assigned SQL/Practice problems",
+        "Apply concept on dataset/project",
+        "Push work to GitHub",
+        "Revise & document learnings",
+      ];
+      for (let d = 16; d <= 90; d++) PLAN.push({ day: d, tasks: G });
+
+      const KEY = "analytics90_v2";
+      let state = {};
+      try {
+        const r = localStorage.getItem(KEY);
+        if (r) state = JSON.parse(r);
+      } catch (e) {}
+
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+      function tk(day, i) {
+        return `d${day}_${i}`;
+      }
+      function isDayDone(day) {
+        return PLAN[day - 1].tasks.every((_, i) => state[tk(day, i)]);
+      }
+      function totalTasks() {
+        return PLAN.reduce((s, d) => s + d.tasks.length, 0);
+      }
+      function countDone() {
+        let n = 0;
+        PLAN.forEach((d) =>
+          d.tasks.forEach((_, i) => {
+            if (state[tk(d.day, i)]) n++;
+          }),
+        );
+        return n;
+      }
+      function countDaysDone() {
+        return PLAN.filter((d) => isDayDone(d.day)).length;
+      }
+
+      function updateStats() {
+        const dd = countDaysDone(),
+          td = countDone(),
+          tt = totalTasks();
+        const pct = Math.round((td / tt) * 100);
+        document.getElementById("hDays").textContent = dd;
+        document.getElementById("hTasks").textContent = td;
+        document.getElementById("hPct").textContent = pct + "%";
+        document.getElementById("pBar").style.width = pct + "%";
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2200);
+      }
+
+      function exportProgress() {
+        const blob = new Blob(
+          [
+            JSON.stringify(
+              { state, exported: new Date().toISOString() },
+              null,
+              2,
+            ),
+          ],
+          { type: "application/json" },
+        );
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `analytics90_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        showToast("Backup exported!");
+      }
+
+      function importProgress(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (data.state) {
+              state = data.state;
+              save();
+              render();
+              updateStats();
+              showToast("Progress restored!");
+            }
+          } catch (err) {
+            showToast("Invalid backup file");
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      }
+
+      function resetAll() {
+        if (!confirm("Reset ALL progress? This cannot be undone.")) return;
+        state = {};
+        save();
+        render();
+        updateStats();
+        showToast("Progress reset");
+      }
+
+      function render() {
+        const cont = document.getElementById("weekContainer");
+        const openWeeks = new Set(),
+          openDays = new Set();
+        cont
+          .querySelectorAll(".week-days.open")
+          .forEach((el) => openWeeks.add(el.dataset.week));
+        cont
+          .querySelectorAll(".day-tasks.open")
+          .forEach((el) => openDays.add(el.dataset.day));
+        cont.innerHTML = "";
+
+        for (let w = 0; w < 13; w++) {
+          const s = w * 7 + 1,
+            e = Math.min(s + 6, 90);
+          if (s > 90) break;
+          const days = PLAN.slice(s - 1, e);
+          const daysDone = days.filter((d) => isDayDone(d.day)).length;
+          const wComplete = daysDone === days.length;
+
+          const block = document.createElement("div");
+          block.className = "week-block";
+
+          const wh = document.createElement("div");
+          wh.className = "week-header" + (wComplete ? " week-complete" : "");
+          const dots = days
+            .map(
+              (d) =>
+                `<div class="week-dot${isDayDone(d.day) ? " done" : ""}"></div>`,
+            )
+            .join("");
+          wh.innerHTML = `
+      <span class="week-num">WK ${w + 1}</span>
+      <span class="week-label">Days ${s}–${e}</span>
+      <div class="week-progress-mini">${dots}<span class="week-count" id="wc-${w}">${daysDone}/${days.length}</span></div>
+      <span class="week-arrow${openWeeks.has(String(w)) ? " open" : ""}" id="wa-${w}">▼</span>`;
+
+          const wd = document.createElement("div");
+          wd.className =
+            "week-days" + (openWeeks.has(String(w)) ? " open" : "");
+          wd.dataset.week = w;
+
+          days.forEach((dayData) => {
+            const done = isDayDone(dayData.day);
+            const tasksDone = dayData.tasks.filter(
+              (_, i) => state[tk(dayData.day, i)],
+            ).length;
+
+            const dc = document.createElement("div");
+            dc.className = "day-card" + (done ? " day-complete" : "");
+            dc.id = `dc-${dayData.day}`;
+
+            const dh = document.createElement("div");
+            dh.className = "day-header";
+            dh.innerHTML = `
+        <div class="day-circle${done ? " done" : ""}" id="dcirc-${dayData.day}"></div>
+        <span class="day-label${done ? " done" : ""}" id="dlbl-${dayData.day}">Day ${dayData.day}</span>
+        <span class="day-preview">${dayData.tasks[0]}</span>
+        <span class="day-task-count" id="dtc-${dayData.day}">${tasksDone}/${dayData.tasks.length}</span>
+        <span class="day-arrow${openDays.has(String(dayData.day)) ? " open" : ""}" id="darr-${dayData.day}">▼</span>`;
+
+            const dt = document.createElement("div");
+            dt.className =
+              "day-tasks" + (openDays.has(String(dayData.day)) ? " open" : "");
+            dt.dataset.day = dayData.day;
+
+            dayData.tasks.forEach((task, i) => {
+              const checked = !!state[tk(dayData.day, i)];
+              const row = document.createElement("div");
+              row.className = "task-row";
+              row.innerHTML = `
+          <div class="task-box${checked ? " done" : ""}" id="tb-${dayData.day}-${i}"></div>
+          <span class="task-text${checked ? " done" : ""}" id="tt-${dayData.day}-${i}">${task}</span>`;
+
+              row.addEventListener("click", () => {
+                const k = tk(dayData.day, i);
+                state[k] = !state[k];
+                save();
+                const c = state[k];
+                document.getElementById(`tb-${dayData.day}-${i}`).className =
+                  "task-box" + (c ? " done" : "");
+                document.getElementById(`tt-${dayData.day}-${i}`).className =
+                  "task-text" + (c ? " done" : "");
+                const nd = isDayDone(dayData.day);
+                document.getElementById(`dcirc-${dayData.day}`).className =
+                  "day-circle" + (nd ? " done" : "");
+                document.getElementById(`dlbl-${dayData.day}`).className =
+                  "day-label" + (nd ? " done" : "");
+                document.getElementById(`dc-${dayData.day}`).className =
+                  "day-card" + (nd ? " day-complete" : "");
+                const td2 = dayData.tasks.filter(
+                  (_, j) => state[tk(dayData.day, j)],
+                ).length;
+                document.getElementById(`dtc-${dayData.day}`).textContent =
+                  `${td2}/${dayData.tasks.length}`;
+                const ndone2 = days.filter((d2) => isDayDone(d2.day)).length;
+                document.getElementById(`wc-${w}`).textContent =
+                  `${ndone2}/${days.length}`;
+                wh.className =
+                  "week-header" +
+                  (ndone2 === days.length ? " week-complete" : "");
+                const dotEls = wh.querySelectorAll(".week-dot");
+                days.forEach((d2, di) => {
+                  dotEls[di].className =
+                    "week-dot" + (isDayDone(d2.day) ? " done" : "");
+                });
+                updateStats();
+              });
+              dt.appendChild(row);
+            });
+
+            dh.addEventListener("click", () => {
+              const isOpen = dt.classList.toggle("open");
+              document.getElementById(`darr-${dayData.day}`).className =
+                "day-arrow" + (isOpen ? " open" : "");
+            });
+
+            dc.appendChild(dh);
+            dc.appendChild(dt);
+            wd.appendChild(dc);
+          });
+
+          wh.addEventListener("click", () => {
+            const isOpen = wd.classList.toggle("open");
+            document.getElementById(`wa-${w}`).className =
+              "week-arrow" + (isOpen ? " open" : "");
+          });
+
+          block.appendChild(wh);
+          block.appendChild(wd);
+          cont.appendChild(block);
+        }
+        updateStats();
+      }
+
+      render();
+    </script>
+  </body>
+</html>
