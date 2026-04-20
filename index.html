@@ -528,7 +528,7 @@
           <li><strong>Rule 2:</strong> Build the dbt project by Day 20. If you cannot demo it live in an interview, remove it from your resume.</li>
           <li><strong>Rule 3:</strong> Solve every practice problem listed for each day. No skipping. Consistency over 90 days beats any single intensive weekend session.</li>
           <li><strong>Rule 4:</strong> Every number on your resume — '22% improvement', '35% cost saving' — must have a step-by-step explanation ready.</li>
-          <li><strong>Rule 5:</strong> Start applying to Tier 1 companies (TCS, Wipro) first. Use those interviews as practice reps.</li>
+          <li><strong>Rule 5:</strong> Start applying to Tier 1 service-based companies (TCS, Wipro) first. Use those interviews as practice reps.</li>
           <li><strong>Rule 6:</strong> If any resource link gives a 404 error, go to w3schools.com/sql for SQL syntax and docs.getdbt.com for dbt syntax.</li>
         </ul>
 
@@ -1058,13 +1058,14 @@
         },
         {
           day: 45,
-          title: "Tableau — LOD Expressions (FIXED · INCLUDE · EXCLUDE)",
+          title: "Tableau — LODs (FIXED · INCLUDE · EXCLUDE) & Sets",
           tasks: [
             "Understand Level of Detail expressions",
             "FIXED runs before dimension filters",
             "INCLUDE adds a dimension",
             "EXCLUDE removes a dimension",
             "Watch Tableau Tim - LOD Explained",
+            "Create a Set for Top 10 Customers",
           ],
         },
         {
@@ -1170,7 +1171,7 @@
         {
           day: 55,
           title:
-            "Apply — Tier 1 Batch (TCS · Wipro · Infosys · Mphasis · Hexaware)",
+            "Apply — Tier 1 Batch (TCS · Wipro · Infosys · Cognizant · Capgemini)",
           tasks: [
             "Apply to all 5 Tier 1 companies today",
             "Mirror exact technology words in resume",
@@ -1752,6 +1753,61 @@
                 document.getElementById(`tt-${dayData.day}-${i}`).className =
                   "task-text" + (c ? " done" : "");
                 const nd = isDayDone(dayData.day);
+                document.getElementById(`dcirc-${dayData.day}`).className =
+                  "day-circle" + (nd ? " done" : "");
+                document.getElementById(`dlbl-${dayData.day}`).className =
+                  "day-label" + (nd ? " done" : "");
+                document.getElementById(`dc-${dayData.day}`).className =
+                  "day-card" + (nd ? " day-complete" : "");
+                const td2 = dayData.tasks.filter(
+                  (_, j) => state[tk(dayData.day, j)],
+                ).length;
+                document.getElementById(`dtc-${dayData.day}`).textContent =
+                  `${td2}/${dayData.tasks.length}`;
+                const ndone2 = days.filter((d2) => isDayDone(d2.day)).length;
+                document.getElementById(`wc-${w}`).textContent =
+                  `${ndone2}/${days.length}`;
+                wh.className =
+                  "week-header" +
+                  (ndone2 === days.length ? " week-complete" : "");
+                const dotEls = wh.querySelectorAll(".week-dot");
+                days.forEach((d2, di) => {
+                  dotEls[di].className =
+                    "week-dot" + (isDayDone(d2.day) ? " done" : "");
+                });
+                updateStats();
+              });
+              dt.appendChild(row);
+            });
+
+            dh.addEventListener("click", () => {
+              const isOpen = dt.classList.toggle("open");
+              document.getElementById(`darr-${dayData.day}`).className =
+                "day-arrow" + (isOpen ? " open" : "");
+            });
+
+            dc.appendChild(dh);
+            dc.appendChild(dt);
+            wd.appendChild(dc);
+          });
+
+          wh.addEventListener("click", () => {
+            const isOpen = wd.classList.toggle("open");
+            document.getElementById(`wa-${w}`).className =
+              "week-arrow" + (isOpen ? " open" : "");
+          });
+
+          block.appendChild(wh);
+          block.appendChild(wd);
+          cont.appendChild(block);
+        }
+        updateStats();
+      }
+
+      render();
+    </script>
+  </body>
+</html>
                 document.getElementById(`dcirc-${dayData.day}`).className =
                   "day-circle" + (nd ? " done" : "");
                 document.getElementById(`dlbl-${dayData.day}`).className =
