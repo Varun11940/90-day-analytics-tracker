@@ -395,6 +395,87 @@
       .toast.show {
         transform: translateX(-50%) translateY(0);
       }
+      
+      /* Info / Rules Section */
+      .rules-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+        user-select: none;
+      }
+      .rules-toggle:hover {
+        background: var(--surface2);
+        border-color: var(--border2);
+      }
+      .rules-toggle-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent);
+        font-family: "DM Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .rules-arrow {
+        font-size: 10px;
+        color: var(--text3);
+        transition: transform 0.25s;
+      }
+      .rules-arrow.open {
+        transform: rotate(180deg);
+      }
+      .rules-content {
+        display: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .rules-content.open {
+        display: block;
+      }
+      .rules-content h3 {
+        font-size: 13px;
+        color: var(--text);
+        margin: 1.5rem 0 0.8rem 0;
+        border-bottom: 1px solid var(--border2);
+        padding-bottom: 6px;
+        font-family: "DM Mono", monospace;
+      }
+      .rules-content h3:first-child {
+        margin-top: 0;
+      }
+      .rules-content p, .rules-content li {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.6;
+        margin-bottom: 8px;
+      }
+      .rules-content ul {
+        margin-bottom: 1.5rem;
+        padding-left: 1.2rem;
+      }
+      .rules-content p strong, .rules-content li strong {
+        color: var(--text);
+      }
+      .claim-box {
+        background: var(--surface2);
+        padding: 12px;
+        border-radius: var(--radius-sm);
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        color: var(--accent);
+        margin: 10px 0 1.5rem 0;
+        border: 1px solid rgba(0, 229, 160, 0.2);
+        line-height: 1.4;
+      }
       #importFile {
         display: none;
       }
@@ -429,6 +510,42 @@
     </div>
 
     <div class="main">
+      <div class="rules-toggle" onclick="toggleRules()">
+        <span class="rules-toggle-title">📖 Read Every Morning - Rules & Guidelines</span>
+        <span class="rules-arrow" id="rules-arrow">▼</span>
+      </div>
+      <div class="rules-content" id="rules-content">
+        <h3>■ DAILY RULES</h3>
+        <ul>
+          <li><strong>One goal per day.</strong> Done = done. Stop.</li>
+          <li><strong>90-min timer on weekdays.</strong> When it rings, you're done. Not 'almost done' — done.</li>
+          <li><strong>Don't pile on next day's work.</strong> Tomorrow continues.</li>
+        </ul>
+
+        <h3>■ 6 RULES — READ BEFORE DAY 1</h3>
+        <ul>
+          <li><strong>Rule 1:</strong> Do NOT apply for jobs during the first 45 days. These days are purely for learning.</li>
+          <li><strong>Rule 2:</strong> Build the dbt project by Day 20. If you cannot demo it live in an interview, remove it from your resume.</li>
+          <li><strong>Rule 3:</strong> Solve every practice problem listed for each day. No skipping. Consistency over 90 days beats any single intensive weekend session.</li>
+          <li><strong>Rule 4:</strong> Every number on your resume — '22% improvement', '35% cost saving' — must have a step-by-step explanation ready.</li>
+          <li><strong>Rule 5:</strong> Start applying to Tier 1 companies (TCS, Wipro) first. Use those interviews as practice reps.</li>
+          <li><strong>Rule 6:</strong> If any resource link gives a 404 error, go to w3schools.com/sql for SQL syntax and docs.getdbt.com for dbt syntax.</li>
+        </ul>
+
+        <h3>■ DEFEND YOUR RESUME — 3 CRITICAL CLAIMS</h3>
+        <p><strong>Claim 1 — 22% improvement in data accuracy</strong><br>
+        Duplicate transaction records caused fraud alert volumes to appear inflated. You found: COUNT(*) vs COUNT(DISTINCT transaction_id) revealed 22% duplicate rate. Fixed with ROW_NUMBER() dedup in dbt. Added unique test so it can't recur.</p>
+        <div class="claim-box">ROW_NUMBER() OVER (PARTITION BY transaction_id ORDER BY updated_at DESC) — keep WHERE rn = 1</div>
+
+        <p><strong>Claim 2 — Latency reduced 8 hrs → 2 hrs</strong><br>
+        Replaced cron-triggered Glue job with: S3 event notification → SNS → SQS → Lambda → Glue. Glue now starts within seconds of file arrival. 2 hrs = Glue's actual processing time for daily volume.</p>
+        <div class="claim-box">S3 event → SNS → SQS → Lambda → Glue. Glue starts within seconds. 2 hr = Glue processing time for 50M rows.</div>
+
+        <p><strong>Claim 3 — 35% query performance improvement</strong><br>
+        Fraud query was doing full table scan on 650M+ row transactions table. Added CLUSTER BY (txn_date, card_id). Partitions Scanned in Query Profile dropped from 100% → 65%. 35% reduction = direct execution time saving.</p>
+        <div class="claim-box">Query Profile → Partitions Scanned. Before: 100%. After CLUSTER BY: 65%. 35% = reduction in partitions read.</div>
+      </div>
+
       <div class="tools-bar">
         <div class="tools-label">Backup & restore your progress</div>
         <button class="btn accent" onclick="exportProgress()">
